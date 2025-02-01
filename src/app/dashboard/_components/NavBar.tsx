@@ -1,4 +1,5 @@
 import BrandLogo from '@/components/BrandLogo';
+import { UserButton } from '@clerk/nextjs';
 import Link from 'next/link';
 
 export default function NavBar() {
@@ -17,6 +18,7 @@ export default function NavBar() {
         <Link href="/products" className="mr-auto">
           Subscriptions
         </Link>
+        <UserButton />
       </nav>
     </header>
   );
