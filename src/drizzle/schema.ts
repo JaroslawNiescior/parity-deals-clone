@@ -13,7 +13,7 @@ import {
 import {
   SubscriptionTierNames,
   subscriptionTiers,
-} from '../data/subscriptionTiers';
+} from '@/app/data/subscriptionTiers';
 
 const createdAt = timestamp('created_at', { withTimezone: true })
   .notNull()
