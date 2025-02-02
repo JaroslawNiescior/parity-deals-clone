@@ -1,6 +1,6 @@
 import { env } from '@/app/data/env/server';
-import { db } from '@/drizzle/db';
-import { UserSubscriptionTable } from '@/drizzle/schema';
+import { createUserSubscription } from '@/server/db/subscription';
+import deleteUser from '@/server/db/users';
 import { WebhookEvent } from '@clerk/nextjs/server';
 import { headers } from 'next/headers';
 import { Webhook } from 'svix';
@@ -35,14 +35,17 @@ export async function POST(req: Request) {
 
   switch (event.type) {
     case 'user.created':
-      console.log('User created:', event.data);
-      await db.insert(UserSubscriptionTable).values({
+      await createUserSubscription({
         clerkUserId: event.data.id,
         tier: 'Free',
       });
       break;
-    case 'user.updated':
-      console.log('User updated:', event.data);
+    case 'user.deleted':
+      if (event.data.id != null) {
+        await deleteUser(event.data.id);
+
+        // TODO: Remove Stripe subscription
+      }
       break;
     default:
       console.log('Unhandled event:', event.type);
