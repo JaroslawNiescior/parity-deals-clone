@@ -1,4 +1,4 @@
-export type subscriptionTierName = 'Free' | 'Basic' | 'Standard' | 'Premium';
+export type SubscriptionTierNames = 'Free' | 'Basic' | 'Standard' | 'Premium';
 export type SubscriptionTier = {
   name: string;
   priceInCents: number;
@@ -9,7 +9,7 @@ export type SubscriptionTier = {
   canRemoveBranding: boolean;
 };
 export type SubscriptionTiers = {
-  [key in subscriptionTierName]: SubscriptionTier;
+  [key in SubscriptionTierNames]: SubscriptionTier;
 };
 
 export const subscriptionTiers: SubscriptionTiers = {
