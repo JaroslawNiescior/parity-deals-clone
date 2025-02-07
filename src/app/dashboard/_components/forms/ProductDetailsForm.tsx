@@ -14,20 +14,33 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-
-const ProductDetailsFormSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  url: z.string().url().min(1, 'URL is required').max(2048),
-  description: z.string().optional(),
-});
+import { Button } from '@/components/ui/button';
+import { ProductDetailsFormSchema } from '@/schemas/product';
+import { createProduct } from '@/server/db/actions/products';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ProductDetailsForm() {
+  const { toast } = useToast();
+
   const form = useForm<z.infer<typeof ProductDetailsFormSchema>>({
     resolver: zodResolver(ProductDetailsFormSchema),
+    defaultValues: {
+      name: '',
+      url: '',
+      description: '',
+    },
   });
 
-  function onSubmit(values: z.infer<typeof ProductDetailsFormSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof ProductDetailsFormSchema>) {
+    const data = await createProduct(values);
+
+    if (data?.message) {
+      toast({
+        title: data.error ? 'Error' : 'Success',
+        description: data.message,
+        variant: data.error ? 'destructive' : 'default',
+      });
+    }
   }
 
   return (
@@ -85,6 +98,11 @@ export default function ProductDetailsForm() {
             </FormItem>
           )}
         />
+        <div className="self-end">
+          <Button disabled={form.formState.isSubmitting} type="submit">
+            Save
+          </Button>
+        </div>
       </form>
     </Form>
   );
