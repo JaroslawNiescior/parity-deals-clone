@@ -1,6 +1,10 @@
 import { getProducts } from '@/server/db/products';
 import { auth } from '@clerk/nextjs/server';
 import NoProducts from './_components/NoProducts';
+import Link from 'next/link';
+import { ArrowRightIcon, PlusIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import ProductGrid from './_components/product/ProductGrid';
 
 export default async function DashboardPage() {
   const { userId, redirectToSignIn } = await auth();
@@ -15,5 +19,24 @@ export default async function DashboardPage() {
     return <NoProducts />;
   }
 
-  return <div>DashboardPage</div>;
+  return (
+    <>
+      <h2 className="mb-6 text-3xl font-semibold flex justify-between">
+        <Link
+          className="group flex gap-2 items-center hover:underline"
+          href="/dashboard/products"
+        >
+          Products
+          <ArrowRightIcon className="transition-transform group-hover:translate-x-1" />
+        </Link>
+        <Button asChild>
+          <Link href="/dashboard/products/new">
+            <PlusIcon className="size-4 mr-2" />
+            New Product
+          </Link>
+        </Button>
+      </h2>
+      <ProductGrid products={products} />
+    </>
+  );
 }
